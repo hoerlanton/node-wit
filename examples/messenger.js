@@ -40,9 +40,9 @@ const PORT = process.env.PORT || 8445;
 const WIT_TOKEN = "HXVNP2JAKJBDGYPZDL32LFRIZYHGBINF";
 
 // Messenger API parameters
-const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN || "EAABmDV3l5aUBAKPlELvHdO7wzNkHPwfAN3c6HhFvLz5bg3pFiktlLUZCAZCQ97vghvc5qUsXZBznn6f1ZAWa2MMrg13KJGtZCz9WwTGtUtwPJ79v1DaTzIdBwwYjRlV6IbBvcZC6rfWszsDrqe71jcKEoffHFFZAbVQf9iKNQxvaAZDZD";
+const FB_PAGE_TOKEN = "EAABmDV3l5aUBAKPlELvHdO7wzNkHPwfAN3c6HhFvLz5bg3pFiktlLUZCAZCQ97vghvc5qUsXZBznn6f1ZAWa2MMrg13KJGtZCz9WwTGtUtwPJ79v1DaTzIdBwwYjRlV6IbBvcZC6rfWszsDrqe71jcKEoffHFFZAbVQf9iKNQxvaAZDZD";
 if (!FB_PAGE_TOKEN) { throw new Error('missing FB_PAGE_TOKEN') }
-const FB_APP_SECRET = process.env.FB_APP_SECRET || "aa0ff220041bcb3551ce1d5318e336cb";
+const FB_APP_SECRET = "aa0ff220041bcb3551ce1d5318e336cb";
 if (!FB_APP_SECRET) { throw new Error('missing FB_APP_SECRET') }
 
 let FB_VERIFY_TOKEN = null;
