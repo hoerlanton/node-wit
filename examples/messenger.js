@@ -161,7 +161,7 @@ const actions = {
      * Image Dimensions
      * Image ratio is 1.91:1
      */
-    sendStructuredMessage(recipientId, elements, cb) {
+    sendStructuredMessage(sender, elements, cb) {
       console.log("sendStructuredMessage function runned");
 
         if (!Array.isArray(elements)) elements = [elements];
@@ -171,7 +171,7 @@ const actions = {
             "template_type": TEMPLATE_GENERIC,
             "elements": elements,
         };
-        this._sendFBRequest(recipientId, payload, cb);
+        this._sendFBRequest(sender, payload, cb);
     },
 
     /**
@@ -181,7 +181,7 @@ const actions = {
      * @param payload       Payload Element
      * @param cb            Callback
      */
-    _sendFBRequest(recipientId, payload, cb) {
+    _sendFBRequest(sender, payload, cb) {
         console.log("_sendFBRequest function runned");
         console.log(recipientId);
         console.log(payload);
@@ -189,7 +189,7 @@ const actions = {
         const opts = {
             form: {
                 recipient: {
-                    id: recipientId,
+                    id: sender,
                 },
                 message: {
                     attachment: {
