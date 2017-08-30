@@ -23,7 +23,9 @@
     "express": "^4.15.4",
     "isomorphic-fetch": "^2.2.1",
     "node-fetch": "^1.7.2",
+    "nodemon": "^1.11.0",
     "request": "^2.81.0",
+    "unirest": "^0.5.1",
     "uuid": "^3.0.0"
   },
   "engines": {

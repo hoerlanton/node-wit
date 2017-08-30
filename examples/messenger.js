@@ -18,6 +18,8 @@ const crypto = require('crypto');
 const express = require('express');
 const fetch = require('node-fetch');
 const request = require('request');
+const unirest = require('unirest');
+
 
 let Wit = null;
 let log = null;
@@ -35,12 +37,12 @@ const PORT = process.env.PORT || 8445;
 
 // Wit.ai parameters
 // Wit.ai parameters
-const WIT_TOKEN = "ZNOS25KXAYUBV2GYRM5SHJDTAK26BQ45";
+const WIT_TOKEN = "HXVNP2JAKJBDGYPZDL32LFRIZYHGBINF";
 
 // Messenger API parameters
 const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN || "EAABmDV3l5aUBAKPlELvHdO7wzNkHPwfAN3c6HhFvLz5bg3pFiktlLUZCAZCQ97vghvc5qUsXZBznn6f1ZAWa2MMrg13KJGtZCz9WwTGtUtwPJ79v1DaTzIdBwwYjRlV6IbBvcZC6rfWszsDrqe71jcKEoffHFFZAbVQf9iKNQxvaAZDZD";
 if (!FB_PAGE_TOKEN) { throw new Error('missing FB_PAGE_TOKEN') }
-const FB_APP_SECRET = process.env.FB_PAGE_TOKEN || "aa0ff220041bcb3551ce1d5318e336cb";
+const FB_APP_SECRET = process.env.FB_APP_SECRET || "aa0ff220041bcb3551ce1d5318e336cb";
 if (!FB_APP_SECRET) { throw new Error('missing FB_APP_SECRET') }
 
 let FB_VERIFY_TOKEN = "anton1234";
@@ -50,6 +52,16 @@ let FB_VERIFY_TOKEN = "anton1234";
 
 // See the Send API reference
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
+
+
+const FBRequest = request.defaults({
+    uri: 'https://graph.facebook.com/me/messages',
+    method: 'POST',
+    json: true,
+    qs: {access_token: FB_PAGE_TOKEN},
+    headers: {'Content-Type': 'application/json'},
+});
+
 
 const fbMessage = (id, text) => {
   const body = JSON.stringify({
@@ -78,6 +90,7 @@ const fbMessage = (id, text) => {
 // Each session has an entry:
 // sessionId -> {fbid: facebookUserId, context: sessionState}
 const sessions = {};
+const TEMPLATE_GENERIC = "generic";
 
 const findOrCreateSession = (fbid) => {
   let sessionId;
@@ -93,6 +106,7 @@ const findOrCreateSession = (fbid) => {
     sessionId = new Date().toISOString();
     sessions[sessionId] = {fbid: fbid, context: {}};
   }
+  console.log("SessionId1:" + sessionId);
   return sessionId;
 };
 
@@ -101,7 +115,9 @@ const actions = {
   send({sessionId}, {text}) {
     // Our bot has something to say!
     // Let's retrieve the Facebook user whose session belongs to
-    const recipientId = sessions[sessionId].fbid;
+      console.log("sessionId2: " + sessionId);
+      console.log("sessions2: " + sessions);
+      const recipientId = sessions[sessionId].fbid;
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
@@ -122,8 +138,363 @@ const actions = {
       return Promise.resolve()
     }
   },
+
+
+    /**
+     * Generic Structured Message Function
+     *
+     * @param recipientId
+     * @param elements Array of Elements
+     * @param cb
+     *
+     * @see https://developers.facebook.com/docs/messenger-platform/send-api-reference#request
+     *
+     * @uses _sendFBRequest
+     *
+     * Limits:
+     * Title: 80 characters
+     * Subtitle: 80 characters
+     * Call-to-action title: 20 characters
+     * Call-to-action items: 3 buttons
+     * Bubbles per message (horizontal scroll): 10 elements
+
+     * Image Dimensions
+     * Image ratio is 1.91:1
+     */
+    sendStructuredMessage(recipientId, elements, cb) {
+      console.log("sendStructuredMessage function runned");
+
+        if (!Array.isArray(elements)) elements = [elements];
+        if (elements.length > 10) throw new Error("sendStructuredMessage: FB does not allow more then 10 payload elements");
+
+        const payload = {
+            "template_type": TEMPLATE_GENERIC,
+            "elements": elements,
+        };
+        this._sendFBRequest(recipientId, payload, cb);
+    },
+
+    /**
+     * Send a Structured Message to a FB Conversation
+     *
+     * @param recipientId   ID
+     * @param payload       Payload Element
+     * @param cb            Callback
+     */
+    _sendFBRequest(recipientId, payload, cb) {
+        console.log("_sendFBRequest function runned");
+        console.log(recipientId);
+        console.log(payload);
+
+        const opts = {
+            form: {
+                recipient: {
+                    id: recipientId,
+                },
+                message: {
+                    attachment: {
+                        type: "template",
+                        payload: payload,
+                    }
+                }
+            },
+        };
+
+        FBRequest(opts, (err, resp, data) => {
+          console.log(err, resp, data);
+          console.log(err || data.error && data.error.message, data);
+            if (cb) {
+                cb(err || data.error && data.error.message, data);
+            }
+        });
+    },
+
+
   // You should implement your custom actions here
-  // See https://wit.ai/docs/quickstart
+  // See https://wit.ai/docs/quickstart#
+
+    foodAPIRecipeRequest(sender, data) {
+
+        let imageUrlCombined = [];
+        let title = [];
+        let readyInMinutes = [];
+        let recipeNumberLength = 0;
+        let inputCuisine = data.entry[0].messaging[0].message.nlp.entities.cuisine[0].value;
+        let inputQuery = "";
+        let inputDiet = "";
+        let inputIntolerance = "";
+        let inputType = "";
+        let ids = [];
+
+        // These code snippets use an open-source library. http://unirest.io/nodejs
+        // 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=egg&limitLicense=false&number=10&offset=0&query=pasta&type=main+course'
+        // "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=sesame&limitLicense=false&number=10&offset=0&query=pasta&type=main+course"
+        console.log(inputCuisine + inputDiet + inputIntolerance + inputType + inputQuery);
+        console.log("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=" +
+            inputCuisine +
+            "&diet=" +
+            inputDiet +
+            "&excludeIngredients=coconut&instructionsRequired=true&intolerances=" +
+            inputIntolerance + "&limitLicense=false&number=10&offset=0&query=" +
+            inputQuery +
+            "&type=" +
+            inputType);
+
+        unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=" +
+            inputCuisine +
+            "&diet=" +
+            inputDiet +
+            "&excludeIngredients=coconut&instructionsRequired=true&intolerances=" +
+            inputIntolerance +
+            "&limitLicense=false&number=10&offset=0&query=" +
+            inputQuery +
+            "&type=" +
+            inputType)
+            .header("X-Mashape-Key", "M0WkYkVSuvmshQP7S6BBF9BdI3I5p1wSLh3jsnXUQkJCIBbL7d")
+            .header("Accept", "application/json")
+            .end(function (result) {
+                //console.log(result.status, result.headers, result.body);
+                //console.log("--------------------->>>>>>>>>>>>:" + JSON.stringify(result.body));
+                for (let x = 0; x < result.body.results.length; x++) {
+                    let imageUrl = result.body.baseUri;
+                    ids.push(result.body.results[x].id);
+                    imageUrlCombined.push(imageUrl + result.body.results[x].imageUrls[0]);
+                    title.push(result.body.results[x].title);
+                    readyInMinutes.push("Ready in minutes:" + result.body.results[x].readyInMinutes);
+                    console.log(title[x]);
+                    console.log(imageUrlCombined[x]);
+                    console.log(readyInMinutes[x]);
+                }
+
+                if (title.length === 0) {
+
+                    actions.send(sessionId, "There are no recipies for this request available", (err, data) => {
+                        if (err) {
+                            console.log(
+                                'Oops! An error occurred while forwarding the response to',
+                                recipientId,
+                                ':',
+                                err
+                            );
+                        }
+                        console.log("sendText function executed");
+                        // Let's give the wheel back to our bot
+                        //cb();
+                    });
+                } else {
+                    //console.log('Oops! Couldn\'t find user for session:', sessionId);
+                    // Giving the wheel back to our bot
+                    //cb();
+                }
+                console.log(title);
+                console.log(imageUrlCombined);
+                console.log(readyInMinutes);
+
+                recipeNumberLength = result.body.results.length;
+                //console.log("recipeNumberLength ---->" + recipeNumberLength);
+
+
+                if (sender) {
+                    // Yay, we found our recipient!
+                    // Let's forward our bot response to her.
+
+                    let elements = [
+                        {
+                            "title": title[0],
+                            "image_url": imageUrlCombined[0],
+                            "subtitle": readyInMinutes[0],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[0]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[1],
+                            "image_url": imageUrlCombined[1],
+                            "subtitle": readyInMinutes[1],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[1]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[2],
+                            "image_url": imageUrlCombined[2],
+                            "subtitle": readyInMinutes[2],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[2]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[3],
+                            "image_url": imageUrlCombined[3],
+                            "subtitle": readyInMinutes[3],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[3]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[4],
+                            "image_url": imageUrlCombined[4],
+                            "subtitle": readyInMinutes[4],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[4]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[5],
+                            "image_url": imageUrlCombined[5],
+                            "subtitle": readyInMinutes[5],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[5]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[6],
+                            "image_url": imageUrlCombined[6],
+                            "subtitle": readyInMinutes[6],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[6]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[7],
+                            "image_url": imageUrlCombined[7],
+                            "subtitle": readyInMinutes[7],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[7]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[8],
+                            "image_url": imageUrlCombined[8],
+                            "subtitle": readyInMinutes[8],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[8]
+                                }
+                            ]
+                        },
+                        {
+                            "title": title[9],
+                            "image_url": imageUrlCombined[9],
+                            "subtitle": readyInMinutes[9],
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://servicio.io",
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": "https://servicio.io"
+                            },
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Checkout recipe",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD-" + ids[9]
+                                }
+                            ]
+                        },
+
+                    ];
+                    actions.sendStructuredMessage(sender, elements);
+            }
+      })
+  }
 };
 
 // Setting up our bot
@@ -141,7 +512,7 @@ app.use(({method, url}, rsp, next) => {
   });
   next();
 });
-app.use(bodyParser.json({ }));
+app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
 // Webhook setup
 app.get('/webhook', (req, res) => {
@@ -153,12 +524,16 @@ app.get('/webhook', (req, res) => {
   }
 });
 
+let intent = "";
+let entityCuisine = "";
+
 // Message handler
 app.post('/webhook', (req, res) => {
   // Parse the Messenger payload
   // See the Webhook reference
   // https://developers.facebook.com/docs/messenger-platform/webhook-reference
   const data = req.body;
+  console.log("Data: " + JSON.stringify(data));
 
   if (data.object === 'page') {
     data.entry.forEach(entry => {
@@ -171,17 +546,32 @@ app.post('/webhook', (req, res) => {
           // We retrieve the user's current session, or create one if it doesn't exist
           // This is needed for our bot to figure out the conversation history
           const sessionId = findOrCreateSession(sender);
-
+          console.log("sessionId3: " + sessionId);
           // We retrieve the message content
           const {text, attachments} = event.message;
           console.log("TEXT:" + text);
           if (attachments) {
             // We received an attachment
             // Let's reply with an automatic message
-            fbMessage(sender, 'Sorry I can only process text messages for now.')
-            .catch(console.error);
+              actions.foodAPIRecipeRequest(sender, data);
           } else if (text) {
             // We received a text message
+              //We retrieve the intent
+              console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
+              console.log(data.entry[0].messaging[0].message.nlp);
+
+              if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
+                  console.log('has intent!');
+                  intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
+              } else {
+                  console.log('has no intent!');
+              }
+              if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('cuisine') === true) {
+                  actions.foodAPIRecipeRequest(sender, data);
+              } else {
+                  console.log('has no cuisine!');
+              }
+
 
             // Let's forward the message to the Wit.ai Bot Engine
             // This will run all actions until our bot has nothing left to do
@@ -193,6 +583,9 @@ app.post('/webhook', (req, res) => {
               // Our bot did everything it has to do.
               // Now it's waiting for further messages to proceed.
               console.log('Waiting for next user messages');
+
+
+
 
               // Based on the session state, you might want to reset the session.
               // This depends heavily on the business logic of your bot.
