@@ -183,7 +183,7 @@ const actions = {
      */
     _sendFBRequest(sender, payload, cb) {
         console.log("_sendFBRequest function runned");
-        console.log(recipientId);
+        console.log(sender);
         console.log(payload);
 
         const opts = {
