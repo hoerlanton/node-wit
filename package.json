@@ -14,7 +14,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --timeout 10000 ./tests/lib.js",
-      "start": "node messenger.js"
+      "start": "node ./example/messenger.js"
   },
   "repository": "https://github.com/wit-ai/node-wit",
   "author": "The Wit Team <help@wit.ai>",
