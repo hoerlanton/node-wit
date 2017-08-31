@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3bfec7f-070b-482d-8e31-974c5f6a77b7" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/messenger.js" afterPath="$PROJECT_DIR$/examples/messenger.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -22,8 +23,8 @@
       <file leaf-file-name="messenger.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/examples/messenger.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="987" column="50" lean-forward="false" selection-start-line="987" selection-start-column="50" selection-end-line="987" selection-end-column="50" />
+            <state relative-caret-position="297">
+              <caret line="1375" column="2" lean-forward="true" selection-start-line="1375" selection-start-column="2" selection-end-line="1375" selection-end-column="2" />
               <folding>
                 <element signature="e#4830#5282#0" expanded="false" />
                 <element signature="e#5336#6182#0" expanded="false" />
@@ -36,12 +37,22 @@
                 <element signature="e#13361#13984#0" expanded="false" />
                 <element signature="e#14025#27942#0" expanded="false" />
                 <element signature="e#27987#30834#0" expanded="false" />
-                <element signature="e#30885#32894#0" expanded="false" />
-                <element signature="e#32946#34999#0" expanded="false" />
-                <element signature="e#35051#37110#0" expanded="false" />
-                <element signature="e#37162#39183#0" expanded="false" />
-                <element signature="e#39235#41254#0" expanded="false" />
-                <element signature="e#41293#44816#0" expanded="false" />
+                <element signature="e#30884#37706#0" expanded="false" />
+                <element signature="e#37757#39766#0" expanded="false" />
+                <element signature="e#39818#41871#0" expanded="false" />
+                <element signature="e#41923#43982#0" expanded="false" />
+                <element signature="e#44034#46055#0" expanded="false" />
+                <element signature="e#46107#48126#0" expanded="false" />
+                <element signature="e#48208#48786#0" expanded="false" />
+                <element signature="e#48869#49479#0" expanded="false" />
+                <element signature="e#49562#50172#0" expanded="false" />
+                <element signature="e#50255#50865#0" expanded="false" />
+                <element signature="e#50948#51558#0" expanded="false" />
+                <element signature="e#51641#52251#0" expanded="false" />
+                <element signature="e#52334#52944#0" expanded="false" />
+                <element signature="e#53027#53637#0" expanded="false" />
+                <element signature="e#53720#54330#0" expanded="false" />
+                <element signature="e#54369#57892#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -70,6 +81,7 @@
       <find>FB_VERIFY_TOKEN</find>
       <find>postback</find>
       <find>makeWitResponseHandler</find>
+      <find>sendStepDescription</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -202,12 +214,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1503934184408</updated>
-      <workItem from="1503934185644" duration="70852000" />
+      <workItem from="1503934185644" duration="72847000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70852000" />
+    <option name="totallyTimeSpent" value="72847000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -220,8 +232,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21445592" sideWeight="0.48360655" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21445592" sideWeight="0.49298596" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -229,9 +242,9 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6643741" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31361762" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21445592" sideWeight="0.5163934" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21445592" sideWeight="0.50701404" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -359,8 +372,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/examples/messenger.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="987" column="50" lean-forward="false" selection-start-line="987" selection-start-column="50" selection-end-line="987" selection-end-column="50" />
+        <state relative-caret-position="297">
+          <caret line="1375" column="2" lean-forward="true" selection-start-line="1375" selection-start-column="2" selection-end-line="1375" selection-end-column="2" />
           <folding>
             <element signature="e#4830#5282#0" expanded="false" />
             <element signature="e#5336#6182#0" expanded="false" />
@@ -373,12 +386,22 @@
             <element signature="e#13361#13984#0" expanded="false" />
             <element signature="e#14025#27942#0" expanded="false" />
             <element signature="e#27987#30834#0" expanded="false" />
-            <element signature="e#30885#32894#0" expanded="false" />
-            <element signature="e#32946#34999#0" expanded="false" />
-            <element signature="e#35051#37110#0" expanded="false" />
-            <element signature="e#37162#39183#0" expanded="false" />
-            <element signature="e#39235#41254#0" expanded="false" />
-            <element signature="e#41293#44816#0" expanded="false" />
+            <element signature="e#30884#37706#0" expanded="false" />
+            <element signature="e#37757#39766#0" expanded="false" />
+            <element signature="e#39818#41871#0" expanded="false" />
+            <element signature="e#41923#43982#0" expanded="false" />
+            <element signature="e#44034#46055#0" expanded="false" />
+            <element signature="e#46107#48126#0" expanded="false" />
+            <element signature="e#48208#48786#0" expanded="false" />
+            <element signature="e#48869#49479#0" expanded="false" />
+            <element signature="e#49562#50172#0" expanded="false" />
+            <element signature="e#50255#50865#0" expanded="false" />
+            <element signature="e#50948#51558#0" expanded="false" />
+            <element signature="e#51641#52251#0" expanded="false" />
+            <element signature="e#52334#52944#0" expanded="false" />
+            <element signature="e#53027#53637#0" expanded="false" />
+            <element signature="e#53720#54330#0" expanded="false" />
+            <element signature="e#54369#57892#0" expanded="false" />
           </folding>
         </state>
       </provider>

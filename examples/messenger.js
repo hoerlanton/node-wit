@@ -748,6 +748,90 @@ const actions = {
             //sendTextMessage(senderId, JSON.stringify(result.body.analyzedInstructions[0].steps[z]));
         });
 },
+    foodAPIRecipeDetailStepsRequest(sender, id) {
+
+    var instructionStepsDetail = [];
+    var instructionStepsDetailString = [];
+    var instructionStepsNumber = [];
+
+// These code snippets use an open-source library. http://unirest.io/nodejs
+    unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + id + "/information?includenutrition=false")
+        .header("X-Mashape-Key", "M0WkYkVSuvmshQP7S6BBF9BdI3I5p1wSLh3jsnXUQkJCIBbL7d")
+        .header("Accept", "application/json")
+        .end(function (result) {
+            console.log("--------------------------------------------------------------------------------------------");
+            //console.log(result.status, result.headers, result.body);
+            for (var z = 0; z < result.body.analyzedInstructions[0].steps.length; z++) {
+                instructionStepsDetail.push(result.body.analyzedInstructions[0].steps[z].step);
+                instructionStepsNumber.push(result.body.analyzedInstructions[0].steps[z].number);
+                //sendStepDescription(sender, instructionStepsDetail[z], instructionStepsNumber[z]);
+                //console.log(instructionStepsDetail);
+            }
+            instructionStepsDetailString = JSON.stringify(instructionStepsDetail);
+            //var instr1 = JSON.stringify(instructionStepsDetail[0]);
+
+            //console.log(instructionStepsDetail);
+            console.log("instructionStepsDetailString: " + instructionStepsDetailString);
+            //console.log(instr1);
+            console.log("instructionStepsDetail: "  + instructionStepsDetail.length);
+
+            actions.sendStepDescription(sender, instructionStepsDetail, instructionStepsNumber);
+
+            if (instructionStepsDetail.length > 1 && instructionStepsDetail.length < 3) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+
+            }
+            else if (instructionStepsDetail.length > 2 && instructionStepsDetail.length < 4) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 3 && instructionStepsDetail.length < 5) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 4 && instructionStepsDetail.length < 6) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 5 && instructionStepsDetail.length < 7) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 6 && instructionStepsDetail.length < 8) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 8 && instructionStepsDetail.length < 10) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription8, 700, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+            else if (instructionStepsDetail.length > 9 && instructionStepsDetail.length < 11) {
+                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription8, 700, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription9, 800, sender, instructionStepsDetail, instructionStepsNumber);
+            }
+        });
+},
     sendListReceiptDetail(sender, title, images) {
         console.log("sendListReceiptDetail1 runned");
         let elements1 = [];
@@ -1043,6 +1127,177 @@ const actions = {
             }
         }
         actions.sendListMessage5(sender, elements5);
+    },
+    sendStepDescription(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[0] + ": " + instructionStepsDetail[0],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+    };
+    FBRequest(opts, (err, resp, data) => {
+        console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+        //if (cb) {
+        //   cb(err || data.error && data.error.message, data);
+        //}
+    });
+},
+    sendStepDescription2(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[1] + ": " + instructionStepsDetail[1],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription3(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[2] + ": " + instructionStepsDetail[2],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription4(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[3] + ": " + instructionStepsDetail[3],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription5(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[4] + ": " + instructionStepsDetail[4],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription6(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[5] + ": " + instructionStepsDetail[5],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription7(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[6] + ": " + instructionStepsDetail[6],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription8(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[7] + ": " + instructionStepsDetail[7],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendStepDescription9(sender, instructionStepsDetail, instructionStepsNumber) {
+        let opts = {
+            form: {
+                recipient: {
+                    id: sender
+                },
+                message: {
+                    text: "Step " + instructionStepsNumber[8] + ": " + instructionStepsDetail[8],
+                    metadata: "DEVELOPER_DEFINED_METADATA"
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
     },
     firstAnswerChooseCuisine(sender) {
         console.log("firstAnswerChooseCuisine runned");
