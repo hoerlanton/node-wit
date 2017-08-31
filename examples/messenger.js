@@ -90,6 +90,7 @@ const sessions = {};
 const TEMPLATE_GENERIC = "generic";
 let ids = [];
 let id = 0;
+let elements = [];
 
 const findOrCreateSession = (fbid) => {
   let sessionId;
@@ -188,25 +189,11 @@ const actions = {
         });
     },
     /**
-     * Generic Structured Message Function
+     * Send a Structured Message to a FB Conversation
      *
-     * @param sender
-     * @param elements Array of Elements
-     * @param cb
-     *
-     * @see https://developers.facebook.com/docs/messenger-platform/send-api-reference#request
-     *
-     * @uses _sendFBRequest
-     *
-     * Limits:
-     * Title: 80 characters
-     * Subtitle: 80 characters
-     * Call-to-action title: 20 characters
-     * Call-to-action items: 3 buttons
-     * Bubbles per message (horizontal scroll): 10 elements
-
-     * Image Dimensions
-     * Image ratio is 1.91:1
+     * @param sender   ID
+     * @param payload       Payload Element
+     * @param cb            Callback
      */
     sendStructuredMessage(sender, elements, cb) {
       console.log("sendStructuredMessage function runned");
@@ -220,10 +207,10 @@ const actions = {
         };
         this._sendFBRequest(sender, payload, cb);
     },
-    sendListMessage(sender, elements, cb) {
+    sendListMessage1(sender, elements1, cb) {
         console.log("sender:" + sender);
-        console.log("elements: " + elements);
-        console.log("sendListMessage runned");
+        console.log("elements1: " + JSON.stringify(elements1));
+        console.log("sendListMessage1 runned");
 
         let opts = {
             "form": {
@@ -235,7 +222,7 @@ const actions = {
                         "payload": {
                             "template_type": "list",
                             "top_element_style": "compact",
-                            "elements": elements,
+                            "elements": elements1,
                             "buttons": [
                                 {
                                     "title": "Checkout Steps",
@@ -249,20 +236,152 @@ const actions = {
             }
         };
         FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"RESPONSE:" + JSON.stringify(resp) +"DATA:" + JSON.stringify(data));
-            if (cb) {
-                cb(err || data.error && data.error.message, data);
-            }
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
         });
     },
+    sendListMessage2(sender, elements2, cb) {
+        console.log("sender:" + sender);
+        console.log("elements2: " + JSON.stringify(elements2));
+        console.log("sendListMessage2 runned");
 
-    /**
-     * Send a Structured Message to a FB Conversation
-     *
-     * @param sender   ID
-     * @param payload       Payload Element
-     * @param cb            Callback
-     */
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": elements2,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendListMessage3(sender, elements3, cb) {
+        console.log("sender:" + sender);
+        console.log("elements3: " + JSON.stringify(elements3));
+        console.log("sendListMessage3 runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": elements3,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendListMessage4(sender, elements4, cb) {
+        console.log("sender:" + sender);
+        console.log("elements4: " + JSON.stringify(elements4));
+        console.log("sendListMessage4 runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": elements4,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendListMessage5(sender, elements5, cb) {
+        console.log("sender:" + sender);
+        console.log("elements5: " + JSON.stringify(elements5));
+        console.log("sendListMessage5 runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": elements5,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
     _sendFBRequest(sender, payload, cb) {
         console.log("_sendFBRequest function runned");
         //console.log(sender);
@@ -585,6 +704,9 @@ const actions = {
         .end(function (result) {
             //console.log(result.status, result.headers, result.body);
             //console.log("--------------------->>>>>>>>>>>>:" + JSON.stringify(result.body));
+            if (!result.body.extendedIngredients) {
+                return;
+            }
             for (var y = 0; y < result.body.extendedIngredients.length; y++) {
                 receiptDetail.push(result.body.extendedIngredients[y]);
                 title.push(receiptDetail[y].originalString);
@@ -599,30 +721,37 @@ const actions = {
             //console.log("Receiptdetail: ----->>>>" + receiptDetail);
             //console.log("title: ----->>>>" + title);
             //console.log("images: ----->>>>" + images);
-            //console.log("ingredients length ---->>>>>" + ingridientsLength);
+            console.log("ingredients length ---->>>>> " + ingridientsLength);
 
             actions.sendListReceiptDetail(sender, title, images);
 
-            if (ingridientsLength > 4 && ingridientsLength < 8 ) {
+            if (ingridientsLength > 4 && ingridientsLength <= 8 ) {
                 actions.sendListReceiptDetail2(sender, title, images);
             }
-            else if (ingridientsLength > 8 && ingridientsLength < 12) {
-                actions.sendListReceiptDetail2(sender, title, images);
-                actions.sendListReceiptDetail3(sender, title, images);
-            }
-            else if (ingridientsLength > 12) {
+            else if (ingridientsLength > 8 && ingridientsLength <= 12) {
                 actions.sendListReceiptDetail2(sender, title, images);
                 actions.sendListReceiptDetail3(sender, title, images);
             }
-
+            else if (ingridientsLength > 12  && ingridientsLength <= 16) {
+                actions.sendListReceiptDetail2(sender, title, images);
+                actions.sendListReceiptDetail3(sender, title, images);
+                actions.sendListReceiptDetail4(sender, title, images);
+            }
+            else if (ingridientsLength > 16  && ingridientsLength <= 20) {
+                actions.sendListReceiptDetail2(sender, title, images);
+                actions.sendListReceiptDetail3(sender, title, images);
+                actions.sendListReceiptDetail4(sender, title, images);
+                actions.sendListReceiptDetail5(sender, title, images);
+            }
+            ingridientsLength = 0;
             //var fullInfo = receiptDetail + instructionStepsDetail;
             //sendTextMessage(senderId, JSON.stringify(result.body.analyzedInstructions[0].steps[z]));
         });
 },
     sendListReceiptDetail(sender, title, images) {
-        console.log("sendListReceiptDetail runned");
-        let elements = [];
-        elements[0] = {
+        console.log("sendListReceiptDetail1 runned");
+        let elements1 = [];
+        elements1[0] = {
             "title": title[0],
             "image_url": images[0],
             "subtitle": "",
@@ -632,10 +761,10 @@ const actions = {
                 "messenger_extensions": true,
                 "webview_height_ratio": "tall",
                 "fallback_url": "https://servicio.io"
-            },
-        }
+            }
+        };
         if (title[1]) {
-            elements[1] = {
+            elements1[1] = {
                 "title": title[1],
                 "image_url": images[1],
                 "subtitle": "",
@@ -645,11 +774,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[2]) {
-            elements[2] = {
+            elements1[2] = {
                 "title": title[2],
                 "image_url": images[2],
                 "subtitle": "",
@@ -659,11 +788,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[3]) {
-            elements[3] = {
+            elements1[3] = {
                 "title": title[3],
                 "image_url": images[3],
                 "subtitle": "",
@@ -673,14 +802,15 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
-        actions.sendListMessage(sender, elements);
+        actions.sendListMessage1(sender, elements1);
     },
     sendListReceiptDetail2(sender, title, images) {
-        let elements = [];
-            elements[4] = {
+        console.log("sendListReceiptDetail2 runned");
+        let elements2 = [];
+        elements2[0] = {
                 "title": title[4],
                 "image_url": images[4],
                 "subtitle": "",
@@ -690,10 +820,10 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
-            }
+                }
+            };
         if (title[5]) {
-            elements[5] = {
+            elements2[1] = {
                 "title": title[5],
                 "image_url": images[5],
                 "subtitle": "",
@@ -703,11 +833,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[6]) {
-            elements[6] = {
+            elements2[2] = {
                 "title": title[6],
                 "image_url": images[6],
                 "subtitle": "",
@@ -717,11 +847,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[7]) {
-            elements[7] = {
+            elements2[3] = {
                 "title": title[7],
                 "image_url": images[7],
                 "subtitle": "",
@@ -731,14 +861,15 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
-        actions.sendListMessage(sender, elements);
+        actions.sendListMessage2(sender, elements2);
     },
     sendListReceiptDetail3(sender, title, images) {
-        let elements = [];
-            elements[8] = {
+        console.log("sendListReceiptDetail3 runned");
+        let elements3 = [];
+        elements3[0] = {
                 "title": title[8],
                 "image_url": images[8],
                 "subtitle": "",
@@ -748,10 +879,10 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
-            }
+                }
+            };
         if (title[9]) {
-            elements[9] = {
+            elements3[1] = {
                 "title": title[9],
                 "image_url": images[9],
                 "subtitle": "",
@@ -761,11 +892,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[10]) {
-            elements[10] = {
+            elements3[2] = {
                 "title": title[10],
                 "image_url": images[10],
                 "subtitle": "",
@@ -775,11 +906,11 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
         if (title[11]) {
-            elements[11] = {
+            elements3[3] = {
                 "title": title[11],
                 "image_url": images[11],
                 "subtitle": "",
@@ -789,10 +920,129 @@ const actions = {
                     "messenger_extensions": true,
                     "webview_height_ratio": "tall",
                     "fallback_url": "https://servicio.io"
-                },
+                }
             }
         }
-        actions.sendListMessage(sender, elements);
+        actions.sendListMessage3(sender, elements3);
+    },
+    sendListReceiptDetail4(sender, title, images) {
+        console.log("sendListReceiptDetail4 runned");
+        let elements4 = [];
+
+        elements4[0] = {
+            "title": title[12],
+            "image_url": images[12],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            }
+        };
+        if (title[13]) {
+            elements4[1] = {
+                "title": title[13],
+                "image_url": images[13],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        if (title[14]) {
+            elements4[2] = {
+                "title": title[14],
+                "image_url": images[14],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        if (title[15]) {
+            elements4[3] = {
+                "title": title[15],
+                "image_url": images[15],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        actions.sendListMessage4(sender, elements4);
+    },
+    sendListReceiptDetail5(sender, title, images) {
+        console.log("sendListReceiptDetail5 runned");
+        let elements5 = []
+        elements5[0] = {
+            "title": title[16],
+            "image_url": images[16],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            }
+        };
+        if (title[17]) {
+            elements5[1] = {
+                "title": title[17],
+                "image_url": images[17],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        if (title[18]) {
+            elements5[2] = {
+                "title": title[18],
+                "image_url": images[18],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        if (title[19]) {
+            elements5[3] = {
+                "title": title[19],
+                "image_url": images[19],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }
+        }
+        actions.sendListMessage5(sender, elements5);
     },
     firstAnswerChooseCuisine(sender) {
         console.log("firstAnswerChooseCuisine runned");
