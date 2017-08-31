@@ -44,7 +44,6 @@ const FB_PAGE_TOKEN = "EAABmDV3l5aUBACAOMl8ZCUlP2WiNNg4bB14GsivgYZBnfn4zn24xaU6F
 if (!FB_PAGE_TOKEN) { throw new Error('missing FB_PAGE_TOKEN') }
 const FB_APP_SECRET = "aa0ff220041bcb3551ce1d5318e336cb";
 if (!FB_APP_SECRET) { throw new Error('missing FB_APP_SECRET') }
-
 const FB_VERIFY_TOKEN = "anton1234";
 
 // ----------------------------------------------------------------------------
@@ -52,8 +51,6 @@ const FB_VERIFY_TOKEN = "anton1234";
 
 // See the Send API reference
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
-
-
 const FBRequest = request.defaults({
     uri: 'https://graph.facebook.com/me/messages',
     method: 'POST',
@@ -91,6 +88,8 @@ const fbMessage = (id, text) => {
 // sessionId -> {fbid: facebookUserId, context: sessionState}
 const sessions = {};
 const TEMPLATE_GENERIC = "generic";
+let ids = [];
+let id = 0;
 
 const findOrCreateSession = (fbid) => {
   let sessionId;
@@ -138,12 +137,60 @@ const actions = {
       return Promise.resolve()
     }
   },
+    // You should implement your custom actions here
+    // See https://wit.ai/docs/quickstart
+    sendText(recipientId, msg, cb){
 
+        if (msg > 320) msg = msg.substr(0, 320);
 
+        const opts = {
+            form: {
+                recipient: {
+                    id: recipientId,
+                },
+                message: {
+                    text: msg,
+                },
+            },
+        };
+
+        FBRequest(opts, (err, resp, data) => {
+            if (cb) {
+                cb(err || data.error && data.error.message, data);
+            }
+        });
+    },
+    sendQuickReplyMessage(sender, msg, elements, cb){
+        console.log("sendQuickReplyMessage runned");
+        console.log("sendQuickReplyMessage sender" + sender);
+        console.log("sendQuickReplyMessage msg" + msg);
+        console.log("sendQuickReplyMessage elements" + elements);
+
+        if (msg > 320) msg = msg.substr(0, 320);
+
+        const opts =  {
+            form: {
+                recipient: {
+                    id: sender,
+                },
+                message: {
+                    text: msg,
+                    quick_replies: elements
+                },
+            },
+        };
+
+        FBRequest(opts, (err, resp, data) => {
+            //console.log(JSON.stringify(opts) + JSON.stringify(err) + JSON.stringify(resp) + JSON.stringify(data));
+            if (cb) {
+                cb(err || data.error && data.error.message, data);
+            }
+        });
+    },
     /**
      * Generic Structured Message Function
      *
-     * @param recipientId
+     * @param sender
      * @param elements Array of Elements
      * @param cb
      *
@@ -173,18 +220,53 @@ const actions = {
         };
         this._sendFBRequest(sender, payload, cb);
     },
+    sendListMessage(sender, elements, cb) {
+        console.log("sender:" + sender);
+        console.log("elements: " + elements);
+        console.log("sendListMessage runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": elements,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) +"RESPONSE:" + JSON.stringify(resp) +"DATA:" + JSON.stringify(data));
+            if (cb) {
+                cb(err || data.error && data.error.message, data);
+            }
+        });
+    },
 
     /**
      * Send a Structured Message to a FB Conversation
      *
-     * @param recipientId   ID
+     * @param sender   ID
      * @param payload       Payload Element
      * @param cb            Callback
      */
     _sendFBRequest(sender, payload, cb) {
         console.log("_sendFBRequest function runned");
-        console.log(sender);
-        console.log(payload);
+        //console.log(sender);
+        //console.log(payload);
 
         const opts = {
             form: {
@@ -201,18 +283,11 @@ const actions = {
         };
 
         FBRequest(opts, (err, resp, data) => {
-          console.log(err, resp, data);
-          console.log(err || data.error && data.error.message, data);
             if (cb) {
                 cb(err || data.error && data.error.message, data);
             }
         });
     },
-
-
-  // You should implement your custom actions here
-  // See https://wit.ai/docs/quickstart#
-
     foodAPIRecipeRequest(sender, data) {
 
         let imageUrlCombined = [];
@@ -224,13 +299,12 @@ const actions = {
         let inputDiet = "";
         let inputIntolerance = "";
         let inputType = "";
-        let ids = [];
 
         // These code snippets use an open-source library. http://unirest.io/nodejs
         // 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=egg&limitLicense=false&number=10&offset=0&query=pasta&type=main+course'
         // "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=sesame&limitLicense=false&number=10&offset=0&query=pasta&type=main+course"
-        console.log(inputCuisine + inputDiet + inputIntolerance + inputType + inputQuery);
-        console.log("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=" +
+        //console.log(inputCuisine + inputDiet + inputIntolerance + inputType + inputQuery);
+        /*console.log("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=" +
             inputCuisine +
             "&diet=" +
             inputDiet +
@@ -238,8 +312,8 @@ const actions = {
             inputIntolerance + "&limitLicense=false&number=10&offset=0&query=" +
             inputQuery +
             "&type=" +
-            inputType);
-
+            inputType); */
+        console.log("foodAPIRecipeRequest runned");
         unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=" +
             inputCuisine +
             "&diet=" +
@@ -261,14 +335,14 @@ const actions = {
                     imageUrlCombined.push(imageUrl + result.body.results[x].imageUrls[0]);
                     title.push(result.body.results[x].title);
                     readyInMinutes.push("Ready in minutes:" + result.body.results[x].readyInMinutes);
-                    console.log(title[x]);
-                    console.log(imageUrlCombined[x]);
-                    console.log(readyInMinutes[x]);
+                    //console.log(title[x]);
+                    //console.log(imageUrlCombined[x]);
+                    //console.log(readyInMinutes[x]);
                 }
 
                 if (title.length === 0) {
 
-                    actions.send(sessionId, "There are no recipies for this request available", (err, data) => {
+                    actions.send(sessionId, "There are no recipes for this request available", (err, data) => {
                         if (err) {
                             console.log(
                                 'Oops! An error occurred while forwarding the response to',
@@ -286,9 +360,9 @@ const actions = {
                     // Giving the wheel back to our bot
                     //cb();
                 }
-                console.log(title);
-                console.log(imageUrlCombined);
-                console.log(readyInMinutes);
+                //console.log(title);
+                //console.log(imageUrlCombined);
+                //console.log(readyInMinutes);
 
                 recipeNumberLength = result.body.results.length;
                 //console.log("recipeNumberLength ---->" + recipeNumberLength);
@@ -491,10 +565,309 @@ const actions = {
                         },
 
                     ];
-                    actions.sendStructuredMessage(sender, elements);
+                actions.sendStructuredMessage(sender, elements);
             }
       })
-  }
+  },
+    foodAPIRecipeDetailRequest(sender, id) {
+
+    let receiptDetail = [];
+    let title = [];
+    let images = [];
+    let ingridientsLength = 0;
+
+    //console.log("---->" + id);
+
+// These code snippets use an open-source library. http://unirest.io/nodejs
+    unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + id + "/information?includenutrition=false")
+        .header("X-Mashape-Key", "M0WkYkVSuvmshQP7S6BBF9BdI3I5p1wSLh3jsnXUQkJCIBbL7d")
+        .header("Accept", "application/json")
+        .end(function (result) {
+            //console.log(result.status, result.headers, result.body);
+            //console.log("--------------------->>>>>>>>>>>>:" + JSON.stringify(result.body));
+            for (var y = 0; y < result.body.extendedIngredients.length; y++) {
+                receiptDetail.push(result.body.extendedIngredients[y]);
+                title.push(receiptDetail[y].originalString);
+                images.push(receiptDetail[y].image);
+
+                //console.log(receiptDetail[y].originalString);
+                //console.log(receiptDetail[y].image);
+            }
+
+            ingridientsLength = result.body.extendedIngredients.length;
+
+            //console.log("Receiptdetail: ----->>>>" + receiptDetail);
+            //console.log("title: ----->>>>" + title);
+            //console.log("images: ----->>>>" + images);
+            //console.log("ingredients length ---->>>>>" + ingridientsLength);
+
+            actions.sendListReceiptDetail(sender, title, images);
+
+            if (ingridientsLength > 4 && ingridientsLength < 8 ) {
+                actions.sendListReceiptDetail2(sender, title, images);
+            }
+            else if (ingridientsLength > 8 && ingridientsLength < 12) {
+                actions.sendListReceiptDetail2(sender, title, images);
+                actions.sendListReceiptDetail3(sender, title, images);
+            }
+            else if (ingridientsLength > 12) {
+                actions.sendListReceiptDetail2(sender, title, images);
+                actions.sendListReceiptDetail3(sender, title, images);
+            }
+
+            //var fullInfo = receiptDetail + instructionStepsDetail;
+            //sendTextMessage(senderId, JSON.stringify(result.body.analyzedInstructions[0].steps[z]));
+        });
+},
+    sendListReceiptDetail(sender, title, images) {
+        console.log("sendListReceiptDetail runned");
+        let elements = [];
+        elements[0] = {
+            "title": title[0],
+            "image_url": images[0],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            },
+        }
+        if (title[1]) {
+            elements[1] = {
+                "title": title[1],
+                "image_url": images[1],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[2]) {
+            elements[2] = {
+                "title": title[2],
+                "image_url": images[2],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[3]) {
+            elements[3] = {
+                "title": title[3],
+                "image_url": images[3],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        actions.sendListMessage(sender, elements);
+    },
+    sendListReceiptDetail2(sender, title, images) {
+        let elements = [];
+            elements[4] = {
+                "title": title[4],
+                "image_url": images[4],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        if (title[5]) {
+            elements[5] = {
+                "title": title[5],
+                "image_url": images[5],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[6]) {
+            elements[6] = {
+                "title": title[6],
+                "image_url": images[6],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[7]) {
+            elements[7] = {
+                "title": title[7],
+                "image_url": images[7],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        actions.sendListMessage(sender, elements);
+    },
+    sendListReceiptDetail3(sender, title, images) {
+        let elements = [];
+            elements[8] = {
+                "title": title[8],
+                "image_url": images[8],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        if (title[9]) {
+            elements[9] = {
+                "title": title[9],
+                "image_url": images[9],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[10]) {
+            elements[10] = {
+                "title": title[10],
+                "image_url": images[10],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        if (title[11]) {
+            elements[11] = {
+                "title": title[11],
+                "image_url": images[11],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                },
+            }
+        }
+        actions.sendListMessage(sender, elements);
+    },
+    firstAnswerChooseCuisine(sender) {
+        console.log("firstAnswerChooseCuisine runned");
+        let msg = "What cuisine do you search for? Type or select!";
+        let elements =
+            [
+                {
+                    "content_type": "text",
+                    "title": "German",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/german-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GERMAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "American",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/american-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_AMERICAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Southern",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SOUTHERN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Irish",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Ireland_flag_300.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_IRISH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Korean",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_South_Korea.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_KOREAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Chinese",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_China.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_CHINESE"
+                },
+                {
+                    "content_type": "text",
+                    "title": "French",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_France.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_FRENCH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Eastern European",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag-map_of_the_Eastern_European_countries.svg_.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_EASTERNEUROPE"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Greek",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_Greece.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GREEK"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Spanish",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SPANISH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Italian",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/italian-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_ITALIAN"
+                },
+            ];
+        actions.sendQuickReplyMessage(sender, msg, elements);
+    }
 };
 
 // Setting up our bot
@@ -538,31 +911,87 @@ app.post('/webhook', (req, res) => {
   if (data.object === 'page') {
     data.entry.forEach(entry => {
       entry.messaging.forEach(event => {
-        if (event.message && !event.message.is_echo) {
-          // Yay! We got a new message!
           // We retrieve the Facebook user ID of the sender
           const sender = event.sender.id;
 
+          if(event.postback) {
+              const postback = event.postback.payload;
+              console.log("postpack:" + postback);
+              if (postback === "GET_STARTED_PAYLOAD" || "search") {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[0]) {
+                  console.log("1 postback" + ids[0]);
+                  actions.foodAPIRecipeDetailRequest(sender, ids[0]);
+                  id = ids[0]
+              }
+              else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[1]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[1]);
+                  console.log("1 postback" + ids[1]);
+                  id = ids[1]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[2]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[2]);
+                  console.log("1 postback" + ids[2]);
+
+                  id = ids[2]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[3]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[3]);
+                  console.log("1 postback" + ids[3]);
+
+                  id = ids[3]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[4]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[4]);
+                  console.log("1 postback" + ids[4]);
+
+                  id = ids[4]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[5]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[5]);
+                  console.log("1 postback" + ids[5]);
+
+                  id = ids[5]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[6]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[6]);
+                  console.log("1 postback" + ids[6]);
+
+                  id = ids[6]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[7]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[7]);
+                  console.log("1 postback" + ids[7]);
+
+                  id = ids[7]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[8]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[8]);
+                  console.log("1 postback" + ids[8]);
+
+                  id = ids[8]
+              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[9]) {
+                  actions.foodAPIRecipeDetailRequest(sender, ids[9]);
+                  console.log("1 postback" + ids[9]);
+
+                  id = ids[9]
+              } else if (postback === "Checkout Steps") {
+                  actions.foodAPIRecipeDetailStepsRequest(sender, id)
+              }
+          }
+        if (event.message && !event.message.is_echo) {
+          // Yay! We got a new message!
           // We retrieve the user's current session, or create one if it doesn't exist
           // This is needed for our bot to figure out the conversation history
           const sessionId = findOrCreateSession(sender);
-          console.log("sessionId3: " + sessionId);
+          console.log("sessionId in app.post: " + sessionId);
           // We retrieve the message content
           const {text, attachments} = event.message;
-          console.log("TEXT:" + text);
           if (attachments) {
             // We received an attachment
             // Let's reply with an automatic message
-              actions.foodAPIRecipeRequest(sender, data);
           } else if (text) {
             // We received a text message
-              //We retrieve the intent
               console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
               console.log(data.entry[0].messaging[0].message.nlp);
 
               if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
                   console.log('has intent!');
                   intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
+                  actions.firstAnswerChooseCuisine(sender);
               } else {
                   console.log('has no intent!');
               }
@@ -571,8 +1000,6 @@ app.post('/webhook', (req, res) => {
               } else {
                   console.log('has no cuisine!');
               }
-
-
             // Let's forward the message to the Wit.ai Bot Engine
             // This will run all actions until our bot has nothing left to do
             wit.runActions(
@@ -580,20 +1007,17 @@ app.post('/webhook', (req, res) => {
               text, // the user's message
               sessions[sessionId].context // the user's current session state
             ).then((context) => {
+            //We retrieve the intent
+
               // Our bot did everything it has to do.
               // Now it's waiting for further messages to proceed.
               console.log('Waiting for next user messages');
-
-
-
-
               // Based on the session state, you might want to reset the session.
               // This depends heavily on the business logic of your bot.
               // Example:
               // if (context['done']) {
               //   delete sessions[sessionId];
               // }
-
               // Updating the user's current session state
               sessions[sessionId].context = context;
             })
