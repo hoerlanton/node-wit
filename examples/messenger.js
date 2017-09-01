@@ -91,6 +91,13 @@ const TEMPLATE_GENERIC = "generic";
 let ids = [];
 let id = 0;
 let elements = [];
+let receiptDetail = [];
+let images = [];
+let ingridientsLength = 0;
+let instructionStepsDetail = [];
+let instructionStepsDetailString = [];
+let instructionStepsNumber = [];
+let title = [];
 
 const findOrCreateSession = (fbid) => {
   let sessionId;
@@ -400,17 +407,17 @@ const actions = {
                 }
             },
         };
+        //console.log(JSON.stringify(opts));
 
         FBRequest(opts, (err, resp, data) => {
-            if (cb) {
-                cb(err || data.error && data.error.message, data);
-            }
+            //if (cb) {
+            //    cb(err || data.error && data.error.message, data);
+            //}
         });
     },
     foodAPIRecipeRequest(sender, data) {
 
         let imageUrlCombined = [];
-        let title = [];
         let readyInMinutes = [];
         let recipeNumberLength = 0;
         let inputCuisine = data.entry[0].messaging[0].message.nlp.entities.cuisine[0].value;
@@ -418,6 +425,15 @@ const actions = {
         let inputDiet = "";
         let inputIntolerance = "";
         let inputType = "";
+        receiptDetail = [];
+        images = [];
+        ingridientsLength = 0;
+        title = [];
+        instructionStepsDetail = [];
+        instructionStepsDetailString = [];
+        instructionStepsNumber = [];
+        ids = [];
+
 
         // These code snippets use an open-source library. http://unirest.io/nodejs
         // 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=egg&limitLicense=false&number=10&offset=0&query=pasta&type=main+course'
@@ -457,10 +473,9 @@ const actions = {
                     //console.log(title[x]);
                     //console.log(imageUrlCombined[x]);
                     //console.log(readyInMinutes[x]);
+                    console.log(ids[x]);
                 }
-
                 if (title.length === 0) {
-
                     actions.send(sessionId, "There are no recipes for this request available", (err, data) => {
                         if (err) {
                             console.log(
@@ -482,11 +497,8 @@ const actions = {
                 //console.log(title);
                 //console.log(imageUrlCombined);
                 //console.log(readyInMinutes);
-
                 recipeNumberLength = result.body.results.length;
                 //console.log("recipeNumberLength ---->" + recipeNumberLength);
-
-
                 if (sender) {
                     // Yay, we found our recipient!
                     // Let's forward our bot response to her.
@@ -690,12 +702,8 @@ const actions = {
   },
     foodAPIRecipeDetailRequest(sender, id) {
 
-    let receiptDetail = [];
-    let title = [];
-    let images = [];
-    let ingridientsLength = 0;
-
     //console.log("---->" + id);
+        let ingridientsLength = 0;
 
 // These code snippets use an open-source library. http://unirest.io/nodejs
     unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + id + "/information?includenutrition=false")
@@ -707,7 +715,7 @@ const actions = {
             if (!result.body.extendedIngredients) {
                 return;
             }
-            for (var y = 0; y < result.body.extendedIngredients.length; y++) {
+            for (let y = 0; y < result.body.extendedIngredients.length; y++) {
                 receiptDetail.push(result.body.extendedIngredients[y]);
                 title.push(receiptDetail[y].originalString);
                 images.push(receiptDetail[y].image);
@@ -723,25 +731,25 @@ const actions = {
             //console.log("images: ----->>>>" + images);
             console.log("ingredients length ---->>>>> " + ingridientsLength);
 
-            actions.sendListReceiptDetail(sender, title, images);
+            actions.sendListReceiptDetail(sender);
 
             if (ingridientsLength > 4 && ingridientsLength <= 8 ) {
-                actions.sendListReceiptDetail2(sender, title, images);
+                actions.sendListReceiptDetail2(sender);
             }
             else if (ingridientsLength > 8 && ingridientsLength <= 12) {
-                actions.sendListReceiptDetail2(sender, title, images);
-                actions.sendListReceiptDetail3(sender, title, images);
+                actions.sendListReceiptDetail2(sender);
+                actions.sendListReceiptDetail3(sender);
             }
             else if (ingridientsLength > 12  && ingridientsLength <= 16) {
-                actions.sendListReceiptDetail2(sender, title, images);
-                actions.sendListReceiptDetail3(sender, title, images);
-                actions.sendListReceiptDetail4(sender, title, images);
+                actions.sendListReceiptDetail2(sender);
+                actions.sendListReceiptDetail3(sender);
+                actions.sendListReceiptDetail4(sender);
             }
             else if (ingridientsLength > 16  && ingridientsLength <= 20) {
-                actions.sendListReceiptDetail2(sender, title, images);
-                actions.sendListReceiptDetail3(sender, title, images);
-                actions.sendListReceiptDetail4(sender, title, images);
-                actions.sendListReceiptDetail5(sender, title, images);
+                actions.sendListReceiptDetail2(sender);
+                actions.sendListReceiptDetail3(sender);
+                actions.sendListReceiptDetail4(sender);
+                actions.sendListReceiptDetail5(sender);
             }
             ingridientsLength = 0;
             //var fullInfo = receiptDetail + instructionStepsDetail;
@@ -749,10 +757,6 @@ const actions = {
         });
 },
     foodAPIRecipeDetailStepsRequest(sender, id) {
-
-    var instructionStepsDetail = [];
-    var instructionStepsDetailString = [];
-    var instructionStepsNumber = [];
 
 // These code snippets use an open-source library. http://unirest.io/nodejs
     unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + id + "/information?includenutrition=false")
@@ -775,64 +779,64 @@ const actions = {
             //console.log(instr1);
             console.log("instructionStepsDetail: "  + instructionStepsDetail.length);
 
-            actions.sendStepDescription(sender, instructionStepsDetail, instructionStepsNumber);
+            actions.sendStepDescription(sender);
 
             if (instructionStepsDetail.length > 1 && instructionStepsDetail.length < 3) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
 
             }
             else if (instructionStepsDetail.length > 2 && instructionStepsDetail.length < 4) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
             }
             else if (instructionStepsDetail.length > 3 && instructionStepsDetail.length < 5) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
             }
             else if (instructionStepsDetail.length > 4 && instructionStepsDetail.length < 6) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
+                setTimeout(actions.sendStepDescription5, 400, sender);
             }
             else if (instructionStepsDetail.length > 5 && instructionStepsDetail.length < 7) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription5, 400, sender);
+                setTimeout(actions.sendStepDescription6, 500, sender);
             }
             else if (instructionStepsDetail.length > 6 && instructionStepsDetail.length < 8) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
+                setTimeout(actions.sendStepDescription5, 400, sender);
+                setTimeout(actions.sendStepDescription6, 500, sender);
+                setTimeout(actions.sendStepDescription7, 600, sender);
             }
             else if (instructionStepsDetail.length > 8 && instructionStepsDetail.length < 10) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription8, 700, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
+                setTimeout(actions.sendStepDescription5, 400, sender);
+                setTimeout(actions.sendStepDescription6, 500, sender);
+                setTimeout(actions.sendStepDescription7, 600, sender);
+                setTimeout(actions.sendStepDescription8, 700, sender);
             }
             else if (instructionStepsDetail.length > 9 && instructionStepsDetail.length < 11) {
-                setTimeout(actions.sendStepDescription2, 100, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription3, 200, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription4, 300, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription5, 400, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription6, 500, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription7, 600, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription8, 700, sender, instructionStepsDetail, instructionStepsNumber);
-                setTimeout(actions.sendStepDescription9, 800, sender, instructionStepsDetail, instructionStepsNumber);
+                setTimeout(actions.sendStepDescription2, 100, sender);
+                setTimeout(actions.sendStepDescription3, 200, sender);
+                setTimeout(actions.sendStepDescription4, 300, sender);
+                setTimeout(actions.sendStepDescription5, 400, sender);
+                setTimeout(actions.sendStepDescription6, 500, sender);
+                setTimeout(actions.sendStepDescription7, 600, sender);
+                setTimeout(actions.sendStepDescription8, 700, sender);
+                setTimeout(actions.sendStepDescription9, 800, sender);
             }
         });
 },
-    sendListReceiptDetail(sender, title, images) {
+    sendListReceiptDetail(sender) {
         console.log("sendListReceiptDetail1 runned");
         let elements1 = [];
         elements1[0] = {
@@ -891,7 +895,7 @@ const actions = {
         }
         actions.sendListMessage1(sender, elements1);
     },
-    sendListReceiptDetail2(sender, title, images) {
+    sendListReceiptDetail2(sender) {
         console.log("sendListReceiptDetail2 runned");
         let elements2 = [];
         elements2[0] = {
@@ -950,7 +954,7 @@ const actions = {
         }
         actions.sendListMessage2(sender, elements2);
     },
-    sendListReceiptDetail3(sender, title, images) {
+    sendListReceiptDetail3(sender) {
         console.log("sendListReceiptDetail3 runned");
         let elements3 = [];
         elements3[0] = {
@@ -1009,7 +1013,7 @@ const actions = {
         }
         actions.sendListMessage3(sender, elements3);
     },
-    sendListReceiptDetail4(sender, title, images) {
+    sendListReceiptDetail4(sender) {
         console.log("sendListReceiptDetail4 runned");
         let elements4 = [];
 
@@ -1069,9 +1073,9 @@ const actions = {
         }
         actions.sendListMessage4(sender, elements4);
     },
-    sendListReceiptDetail5(sender, title, images) {
+    sendListReceiptDetail5(sender) {
         console.log("sendListReceiptDetail5 runned");
-        let elements5 = []
+        let elements5 = [];
         elements5[0] = {
             "title": title[16],
             "image_url": images[16],
@@ -1128,7 +1132,9 @@ const actions = {
         }
         actions.sendListMessage5(sender, elements5);
     },
-    sendStepDescription(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription(sender) {
+        console.log("sendStepDescription runned");
+
         let opts = {
             form: {
                 recipient: {
@@ -1147,7 +1153,7 @@ const actions = {
         //}
     });
 },
-    sendStepDescription2(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription2(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1166,7 +1172,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription3(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription3(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1185,7 +1191,8 @@ const actions = {
             //}
         });
     },
-    sendStepDescription4(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription4(sender) {
+
         let opts = {
             form: {
                 recipient: {
@@ -1204,7 +1211,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription5(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription5(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1223,7 +1230,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription6(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription6(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1242,7 +1249,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription7(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription7(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1261,7 +1268,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription8(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription8(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1280,7 +1287,7 @@ const actions = {
             //}
         });
     },
-    sendStepDescription9(sender, instructionStepsDetail, instructionStepsNumber) {
+    sendStepDescription9(sender) {
         let opts = {
             form: {
                 recipient: {
@@ -1418,118 +1425,121 @@ app.post('/webhook', (req, res) => {
       entry.messaging.forEach(event => {
           // We retrieve the Facebook user ID of the sender
           const sender = event.sender.id;
-
-          if(event.postback) {
+          console.log("event:" + JSON.stringify(event));
+          if(event.hasOwnProperty("postback")) {
               const postback = event.postback.payload;
               console.log("postpack:" + postback);
-              if (postback === "GET_STARTED_PAYLOAD" || "search") {
-              }
-              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[0]) {
+              //console.log("Ids: " + ids[0] + ids[1] + ids[2] + ids[3] + ids[4] + ids[5] + ids[6] + ids[7] + ids[8] + ids[9]);
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + String(ids[0])) {
                   console.log("1 postback" + ids[0]);
                   actions.foodAPIRecipeDetailRequest(sender, ids[0]);
                   id = ids[0]
               }
-              else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[1]) {
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[1]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[1]);
                   console.log("1 postback" + ids[1]);
                   id = ids[1]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[2]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[2]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[2]);
                   console.log("1 postback" + ids[2]);
-
                   id = ids[2]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[3]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[3]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[3]);
                   console.log("1 postback" + ids[3]);
-
                   id = ids[3]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[4]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[4]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[4]);
                   console.log("1 postback" + ids[4]);
-
                   id = ids[4]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[5]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[5]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[5]);
                   console.log("1 postback" + ids[5]);
-
                   id = ids[5]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[6]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[6]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[6]);
                   console.log("1 postback" + ids[6]);
-
                   id = ids[6]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[7]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[7]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[7]);
                   console.log("1 postback" + ids[7]);
-
                   id = ids[7]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[8]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[8]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[8]);
                   console.log("1 postback" + ids[8]);
-
                   id = ids[8]
-              } else if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[9]) {
+              }
+              if (postback === "DEVELOPER_DEFINED_PAYLOAD-" + ids[9]) {
                   actions.foodAPIRecipeDetailRequest(sender, ids[9]);
                   console.log("1 postback" + ids[9]);
-
                   id = ids[9]
-              } else if (postback === "Checkout Steps") {
+              }
+              if (postback === "Checkout Steps") {
                   actions.foodAPIRecipeDetailStepsRequest(sender, id)
               }
-          }
-        if (event.message && !event.message.is_echo) {
-          // Yay! We got a new message!
-          // We retrieve the user's current session, or create one if it doesn't exist
-          // This is needed for our bot to figure out the conversation history
-          const sessionId = findOrCreateSession(sender);
-          console.log("sessionId in app.post: " + sessionId);
-          // We retrieve the message content
-          const {text, attachments} = event.message;
-          if (attachments) {
-            // We received an attachment
-            // Let's reply with an automatic message
-          } else if (text) {
-            // We received a text message
-              console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
-              console.log(data.entry[0].messaging[0].message.nlp);
-
-              if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
-                  console.log('has intent!');
-                  intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
-                  actions.firstAnswerChooseCuisine(sender);
-              } else {
-                  console.log('has no intent!');
+              if (postback === "GET_STARTED_PAYLOAD" || "search") {
+                  //actions.firstAnswerChooseCuisine(sender);
               }
-              if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('cuisine') === true) {
-                  actions.foodAPIRecipeRequest(sender, data);
-              } else {
-                  console.log('has no cuisine!');
-              }
-            // Let's forward the message to the Wit.ai Bot Engine
-            // This will run all actions until our bot has nothing left to do
-            wit.runActions(
-              sessionId, // the user's current session
-              text, // the user's message
-              sessions[sessionId].context // the user's current session state
-            ).then((context) => {
-            //We retrieve the intent
-
-              // Our bot did everything it has to do.
-              // Now it's waiting for further messages to proceed.
-              console.log('Waiting for next user messages');
-              // Based on the session state, you might want to reset the session.
-              // This depends heavily on the business logic of your bot.
-              // Example:
-              // if (context['done']) {
-              //   delete sessions[sessionId];
-              // }
-              // Updating the user's current session state
-              sessions[sessionId].context = context;
-            })
-            .catch((err) => {
-              console.error('Oops! Got an error from Wit: ', err.stack || err);
-            })
           }
+          if (event.message && !event.message.is_echo) {
+              // Yay! We got a new message!
+              // We retrieve the user's current session, or create one if it doesn't exist
+              // This is needed for our bot to figure out the conversation history
+              const sessionId = findOrCreateSession(sender);
+              console.log("sessionId in app.post: " + sessionId);
+              // We retrieve the message content
+              const {text, attachments} = event.message;
+              if (attachments) {
+                // We received an attachment
+                // Let's reply with an automatic message
+              } else if (text) {
+                // We received a text message
+                  console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
+                  console.log(data.entry[0].messaging[0].message.nlp);
+                  if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
+                      console.log('has intent!');
+                      //We retrieve the intent
+                      intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
+                      actions.firstAnswerChooseCuisine(sender);
+                  } else {
+                      console.log('has no intent!');
+                  }
+                  if (data.entry[0].messaging[0].message.nlp.entities.cuisine){
+                    if (data.entry[0].messaging[0].message.nlp.entities.cuisine[0].confidence >= 0.85) {
+                        actions.foodAPIRecipeRequest(sender, data);
+                    }
+                  } else {
+                      console.log('has no cuisine!');
+                  }
+                // Let's forward the message to the Wit.ai Bot Engine
+                // This will run all actions until our bot has nothing left to do
+                wit.runActions(
+                  sessionId, // the user's current session
+                  text, // the user's message
+                  sessions[sessionId].context // the user's current session state
+                ).then((context) => {
+                  // Our bot did everything it has to do.
+                  // Now it's waiting for further messages to proceed.
+                  console.log('Waiting for next user messages');
+                  // Based on the session state, you might want to reset the session.
+                  // This depends heavily on the business logic of your bot.
+                  // Example:
+                  // if (context['done']) {
+                  //   delete sessions[sessionId];
+                  // }
+                  // Updating the user's current session state
+                  sessions[sessionId].context = context;
+                })
+                .catch((err) => {
+                  console.error('Oops! Got an error from Wit: ', err.stack || err);
+                })
+           }
         } else {
           console.log('received event', JSON.stringify(event));
         }
