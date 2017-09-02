@@ -765,12 +765,24 @@ const actions = {
         .end(function (result) {
             console.log("--------------------------------------------------------------------------------------------");
             //console.log(result.status, result.headers, result.body);
-            for (var z = 0; z < result.body.analyzedInstructions[0].steps.length; z++) {
+            for (let z = 0; z < result.body.analyzedInstructions[0].steps.length; z++) {
                 instructionStepsDetail.push(result.body.analyzedInstructions[0].steps[z].step);
                 instructionStepsNumber.push(result.body.analyzedInstructions[0].steps[z].number);
                 //sendStepDescription(sender, instructionStepsDetail[z], instructionStepsNumber[z]);
                 //console.log(instructionStepsDetail);
+                //console.log("HOI:" + instructionStepsDetail[z].length);
             }
+            for(let x = 0; x < instructionStepsDetail.length; x++) {
+                if (instructionStepsDetail[x].length > 640) {
+                    let instructionStepsDetailSpliced = instructionStepsDetail[x].substring(0, instructionStepsDetail[x].length / 2);
+                    let instructionStepsDetailSpliced2 = instructionStepsDetail[x].substring(instructionStepsDetail[x].length / 2, instructionStepsDetail[x].length);
+                    instructionStepsDetail.push(instructionStepsDetailSpliced);
+                    instructionStepsDetail.push(instructionStepsDetailSpliced2);
+
+                    console.log("Spliced: " + instructionStepsDetailSpliced);
+                }
+            }
+
             instructionStepsDetailString = JSON.stringify(instructionStepsDetail);
             //var instr1 = JSON.stringify(instructionStepsDetail[0]);
 
@@ -781,33 +793,33 @@ const actions = {
 
             actions.sendStepDescription(sender);
 
-            if (instructionStepsDetail.length > 1 && instructionStepsDetail.length < 3) {
+            if (instructionStepsDetail.length === 2) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
 
             }
-            else if (instructionStepsDetail.length > 2 && instructionStepsDetail.length < 4) {
+            else if (instructionStepsDetail.length === 3) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
             }
-            else if (instructionStepsDetail.length > 3 && instructionStepsDetail.length < 5) {
+            else if (instructionStepsDetail.length === 4) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
             }
-            else if (instructionStepsDetail.length > 4 && instructionStepsDetail.length < 6) {
+            else if (instructionStepsDetail.length === 5) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
                 setTimeout(actions.sendStepDescription5, 400, sender);
             }
-            else if (instructionStepsDetail.length > 5 && instructionStepsDetail.length < 7) {
+            else if (instructionStepsDetail.length === 6) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription5, 400, sender);
                 setTimeout(actions.sendStepDescription6, 500, sender);
             }
-            else if (instructionStepsDetail.length > 6 && instructionStepsDetail.length < 8) {
+            else if (instructionStepsDetail.length === 7) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
@@ -815,7 +827,7 @@ const actions = {
                 setTimeout(actions.sendStepDescription6, 500, sender);
                 setTimeout(actions.sendStepDescription7, 600, sender);
             }
-            else if (instructionStepsDetail.length > 8 && instructionStepsDetail.length < 10) {
+            else if (instructionStepsDetail.length === 8) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
@@ -824,7 +836,7 @@ const actions = {
                 setTimeout(actions.sendStepDescription7, 600, sender);
                 setTimeout(actions.sendStepDescription8, 700, sender);
             }
-            else if (instructionStepsDetail.length > 9 && instructionStepsDetail.length < 11) {
+            else if (instructionStepsDetail.length === 9) {
                 setTimeout(actions.sendStepDescription2, 100, sender);
                 setTimeout(actions.sendStepDescription3, 200, sender);
                 setTimeout(actions.sendStepDescription4, 300, sender);
@@ -1483,8 +1495,8 @@ app.post('/webhook', (req, res) => {
               if (postback === "Checkout Steps") {
                   actions.foodAPIRecipeDetailStepsRequest(sender, id)
               }
-              if (postback === "GET_STARTED_PAYLOAD" || "search") {
-                  //actions.firstAnswerChooseCuisine(sender);
+              if (postback === "GET_STARTED_PAYLOAD" || postback === "search") {
+                  actions.firstAnswerChooseCuisine(sender);
               }
           }
           if (event.message && !event.message.is_echo) {
@@ -1498,11 +1510,11 @@ app.post('/webhook', (req, res) => {
               if (attachments) {
                 // We received an attachment
                 // Let's reply with an automatic message
-              } else if (text) {
+              } else if (text.toLowerCase()) {
                 // We received a text message
                   console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
                   console.log(data.entry[0].messaging[0].message.nlp);
-                  if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
+                  if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true && data.entry[0].messaging[0].message.nlp.entities.cuisine[0].confidence <= 0.99) {
                       console.log('has intent!');
                       //We retrieve the intent
                       intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
@@ -1511,7 +1523,7 @@ app.post('/webhook', (req, res) => {
                       console.log('has no intent!');
                   }
                   if (data.entry[0].messaging[0].message.nlp.entities.cuisine){
-                    if (data.entry[0].messaging[0].message.nlp.entities.cuisine[0].confidence >= 0.85) {
+                    if (data.entry[0].messaging[0].message.nlp.entities.cuisine[0].confidence >= 0.94) {
                         actions.foodAPIRecipeRequest(sender, data);
                     }
                   } else {
