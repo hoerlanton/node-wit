@@ -1514,7 +1514,7 @@ app.post('/webhook', (req, res) => {
                 // We received a text message
                   console.log("Messaging: " + JSON.stringify(data.entry[0].messaging[0]));
                   console.log(data.entry[0].messaging[0].message.nlp);
-                  if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true && data.entry[0].messaging[0].message.nlp.entities.cuisine[0].confidence <= 0.99) {
+                  if (data.entry[0].messaging[0].message.nlp.entities.hasOwnProperty('intent') === true) {
                       console.log('has intent!');
                       //We retrieve the intent
                       intent = data.entry[0].messaging[0].message.nlp.entities.intent[0].value;
