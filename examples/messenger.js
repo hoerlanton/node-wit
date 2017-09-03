@@ -147,6 +147,25 @@ const actions = {
   },
     // You should implement your custom actions here
     // See https://wit.ai/docs/quickstart
+    /**
+     * Send a Structured Message to a FB Conversation
+     *
+     * @param sender   ID
+     * @param payload       Payload Element
+     * @param cb            Callback
+     */
+    sendStructuredMessage(sender, elements, cb) {
+        console.log("sendStructuredMessage function runned");
+
+        if (!Array.isArray(elements)) elements = [elements];
+        if (elements.length > 10) throw new Error("sendStructuredMessage: FB does not allow more then 10 payload elements");
+
+        const payload = {
+            "template_type": TEMPLATE_GENERIC,
+            "elements": elements,
+        };
+        this._sendFBRequest(sender, payload, cb);
+    },
     sendText(recipientId, msg, cb){
 
         if (msg > 320) msg = msg.substr(0, 320);
@@ -195,200 +214,6 @@ const actions = {
             }
         });
     },
-    /**
-     * Send a Structured Message to a FB Conversation
-     *
-     * @param sender   ID
-     * @param payload       Payload Element
-     * @param cb            Callback
-     */
-    sendStructuredMessage(sender, elements, cb) {
-      console.log("sendStructuredMessage function runned");
-
-        if (!Array.isArray(elements)) elements = [elements];
-        if (elements.length > 10) throw new Error("sendStructuredMessage: FB does not allow more then 10 payload elements");
-
-        const payload = {
-            "template_type": TEMPLATE_GENERIC,
-            "elements": elements,
-        };
-        this._sendFBRequest(sender, payload, cb);
-    },
-    sendListMessage1(sender, elements1, cb) {
-        console.log("sender:" + sender);
-        console.log("elements1: " + JSON.stringify(elements1));
-        console.log("sendListMessage1 runned");
-
-        let opts = {
-            "form": {
-                "recipient": {
-                    "id": sender
-                }, "message": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": elements1,
-                            "buttons": [
-                                {
-                                    "title": "Checkout Steps",
-                                    "type": "postback",
-                                    "payload": "Checkout Steps"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendListMessage2(sender, elements2, cb) {
-        console.log("sender:" + sender);
-        console.log("elements2: " + JSON.stringify(elements2));
-        console.log("sendListMessage2 runned");
-
-        let opts = {
-            "form": {
-                "recipient": {
-                    "id": sender
-                }, "message": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": elements2,
-                            "buttons": [
-                                {
-                                    "title": "Checkout Steps",
-                                    "type": "postback",
-                                    "payload": "Checkout Steps"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendListMessage3(sender, elements3, cb) {
-        console.log("sender:" + sender);
-        console.log("elements3: " + JSON.stringify(elements3));
-        console.log("sendListMessage3 runned");
-
-        let opts = {
-            "form": {
-                "recipient": {
-                    "id": sender
-                }, "message": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": elements3,
-                            "buttons": [
-                                {
-                                    "title": "Checkout Steps",
-                                    "type": "postback",
-                                    "payload": "Checkout Steps"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendListMessage4(sender, elements4, cb) {
-        console.log("sender:" + sender);
-        console.log("elements4: " + JSON.stringify(elements4));
-        console.log("sendListMessage4 runned");
-
-        let opts = {
-            "form": {
-                "recipient": {
-                    "id": sender
-                }, "message": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": elements4,
-                            "buttons": [
-                                {
-                                    "title": "Checkout Steps",
-                                    "type": "postback",
-                                    "payload": "Checkout Steps"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendListMessage5(sender, elements5, cb) {
-        console.log("sender:" + sender);
-        console.log("elements5: " + JSON.stringify(elements5));
-        console.log("sendListMessage5 runned");
-
-        let opts = {
-            "form": {
-                "recipient": {
-                    "id": sender
-                }, "message": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": elements5,
-                            "buttons": [
-                                {
-                                    "title": "Checkout Steps",
-                                    "type": "postback",
-                                    "payload": "Checkout Steps"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
     _sendFBRequest(sender, payload, cb) {
         console.log("_sendFBRequest function runned");
         //console.log(sender);
@@ -415,6 +240,81 @@ const actions = {
             //}
         });
     },
+
+    firstAnswerChooseCuisine(sender) {
+        console.log("firstAnswerChooseCuisine runned");
+        let msg = "What cuisine do you search for? Type or select!";
+        let elements =
+            [
+                {
+                    "content_type": "text",
+                    "title": "German",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/german-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GERMAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "American",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/american-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_AMERICAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Southern",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SOUTHERN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Irish",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Ireland_flag_300.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_IRISH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Korean",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_South_Korea.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_KOREAN"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Chinese",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_China.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_CHINESE"
+                },
+                {
+                    "content_type": "text",
+                    "title": "French",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_France.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_FRENCH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Eastern European",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag-map_of_the_Eastern_European_countries.svg_.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_EASTERNEUROPE"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Greek",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_Greece.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GREEK"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Spanish",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SPANISH"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Italian",
+                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/italian-flag-graphic.png",
+                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_ITALIAN"
+                },
+            ];
+        actions.sendQuickReplyMessage(sender, msg, elements);
+    },
     foodAPIRecipeRequest(sender, data) {
 
         let imageUrlCombined = [];
@@ -433,7 +333,6 @@ const actions = {
         instructionStepsDetailString = [];
         instructionStepsNumber = [];
         ids = [];
-
 
         // These code snippets use an open-source library. http://unirest.io/nodejs
         // 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=italian&diet=vegetarian&excludeIngredients=coconut&instructionsRequired=false&intolerances=egg&limitLicense=false&number=10&offset=0&query=pasta&type=main+course'
@@ -473,7 +372,7 @@ const actions = {
                     //console.log(title[x]);
                     //console.log(imageUrlCombined[x]);
                     //console.log(readyInMinutes[x]);
-                    console.log(ids[x]);
+                    //console.log(ids[x]);
                 }
                 if (title.length === 0) {
                     actions.send(sessionId, "There are no recipes for this request available", (err, data) => {
@@ -700,6 +599,7 @@ const actions = {
             }
       })
   },
+
     foodAPIRecipeDetailRequest(sender, id) {
 
     //console.log("---->" + id);
@@ -730,32 +630,346 @@ const actions = {
             //console.log("title: ----->>>>" + title);
             //console.log("images: ----->>>>" + images);
             console.log("ingredients length ---->>>>> " + ingridientsLength);
-
             actions.sendListReceiptDetail(sender);
-
-            if (ingridientsLength > 4 && ingridientsLength <= 8 ) {
-                actions.sendListReceiptDetail2(sender);
-            }
-            else if (ingridientsLength > 8 && ingridientsLength <= 12) {
-                actions.sendListReceiptDetail2(sender);
-                actions.sendListReceiptDetail3(sender);
-            }
-            else if (ingridientsLength > 12  && ingridientsLength <= 16) {
-                actions.sendListReceiptDetail2(sender);
-                actions.sendListReceiptDetail3(sender);
-                actions.sendListReceiptDetail4(sender);
-            }
-            else if (ingridientsLength > 16  && ingridientsLength <= 20) {
-                actions.sendListReceiptDetail2(sender);
-                actions.sendListReceiptDetail3(sender);
-                actions.sendListReceiptDetail4(sender);
-                actions.sendListReceiptDetail5(sender);
-            }
-            ingridientsLength = 0;
             //var fullInfo = receiptDetail + instructionStepsDetail;
             //sendTextMessage(senderId, JSON.stringify(result.body.analyzedInstructions[0].steps[z]));
         });
 },
+    sendListReceiptDetail(sender) {
+        console.log("sendListReceiptDetail runned");
+            let receiptDetailElements1 = [{
+                "title": title[0],
+                "image_url": images[0],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[1],
+                "image_url": images[1],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[2],
+                "image_url": images[2],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                    "title": title[3],
+                    "image_url": images[3],
+                    "subtitle": "",
+                    "default_action": {
+                        "type": "web_url",
+                        "url": "https://servicio.io",
+                        "messenger_extensions": true,
+                        "webview_height_ratio": "tall",
+                        "fallback_url": "https://servicio.io"
+                    }
+                }];
+        let receiptDetailElements2 = [{
+            "title": title[4],
+            "image_url": images[4],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            }
+        },
+            {
+                "title": title[5],
+                "image_url": images[5],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[6],
+                "image_url": images[6],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[7],
+                "image_url": images[7],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }];
+        let receiptDetailElements3 = [{
+            "title": title[8],
+            "image_url": images[8],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            }
+        },
+            {
+                "title": title[9],
+                "image_url": images[9],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[10],
+                "image_url": images[10],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[11],
+                "image_url": images[11],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }];
+        let receiptDetailElements4 = [{
+            "title": title[12],
+            "image_url": images[12],
+            "subtitle": "",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://servicio.io",
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": "https://servicio.io"
+            }
+        },
+            {
+                "title": title[13],
+                "image_url": images[13],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[14],
+                "image_url": images[14],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            },
+            {
+                "title": title[15],
+                "image_url": images[15],
+                "subtitle": "",
+                "default_action": {
+                    "type": "web_url",
+                    "url": "https://servicio.io",
+                    "messenger_extensions": true,
+                    "webview_height_ratio": "tall",
+                    "fallback_url": "https://servicio.io"
+                }
+            }];
+
+        actions.sendListReceiptMessages1(sender, receiptDetailElements1);
+        actions.sendListReceiptMessages2(sender, receiptDetailElements2);
+        actions.sendListReceiptMessages3(sender, receiptDetailElements3);
+        actions.sendListReceiptMessages4(sender, receiptDetailElements4);
+
+
+    },
+    sendListReceiptMessages1(sender, receiptDetailElements1, cb) {
+        console.log("sendListMessages1 runned");
+
+            let opts = {
+                "form": {
+                    "recipient": {
+                        "id": sender
+                    }, "message": {
+                        "attachment": {
+                            "type": "template",
+                            "payload": {
+                                "template_type": "list",
+                                "top_element_style": "compact",
+                                "elements": receiptDetailElements1,
+                                "buttons": [
+                                    {
+                                        "title": "Checkout Steps",
+                                        "type": "postback",
+                                        "payload": "Checkout Steps"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            };
+            FBRequest(opts, (err, resp, data) => {
+                console.log("ERROR:" + JSON.stringify(err) + "OPTS" + JSON.stringify(opts));
+                //if (cb) {
+                //   cb(err || data.error && data.error.message, data);
+                //}
+            });
+    },
+    sendListReceiptMessages2(sender, receiptDetailElements2, cb) {
+        console.log("sendListMessages2 runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": receiptDetailElements2,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) + "OPTS" + JSON.stringify(opts));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+    sendListReceiptMessages3(sender, receiptDetailElements3, cb) {
+            console.log("sendListMessages3 runned");
+
+            let opts = {
+                "form": {
+                    "recipient": {
+                        "id": sender
+                    }, "message": {
+                        "attachment": {
+                            "type": "template",
+                            "payload": {
+                                "template_type": "list",
+                                "top_element_style": "compact",
+                                "elements": receiptDetailElements3,
+                                "buttons": [
+                                    {
+                                        "title": "Checkout Steps",
+                                        "type": "postback",
+                                        "payload": "Checkout Steps"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            };
+            FBRequest(opts, (err, resp, data) => {
+                console.log("ERROR:" + JSON.stringify(err) + "OPTS" + JSON.stringify(opts));
+                //if (cb) {
+                //   cb(err || data.error && data.error.message, data);
+                //}
+            });
+        },
+    sendListReceiptMessages4(sender, receiptDetailElements4, cb) {
+        console.log("sendListMessages4 runned");
+
+        let opts = {
+            "form": {
+                "recipient": {
+                    "id": sender
+                }, "message": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "top_element_style": "compact",
+                            "elements": receiptDetailElements4,
+                            "buttons": [
+                                {
+                                    "title": "Checkout Steps",
+                                    "type": "postback",
+                                    "payload": "Checkout Steps"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        FBRequest(opts, (err, resp, data) => {
+            console.log("ERROR:" + JSON.stringify(err) + "OPTS" + JSON.stringify(opts));
+            //if (cb) {
+            //   cb(err || data.error && data.error.message, data);
+            //}
+        });
+    },
+
     foodAPIRecipeDetailStepsRequest(sender, id) {
 
 // These code snippets use an open-source library. http://unirest.io/nodejs
@@ -791,607 +1005,31 @@ const actions = {
             //console.log(instr1);
             console.log("instructionStepsDetail: "  + instructionStepsDetail.length);
 
-            actions.sendStepDescription(sender);
-
-            if (instructionStepsDetail.length === 2) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-
-            }
-            else if (instructionStepsDetail.length === 3) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-            }
-            else if (instructionStepsDetail.length === 4) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-            }
-            else if (instructionStepsDetail.length === 5) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-                setTimeout(actions.sendStepDescription5, 400, sender);
-            }
-            else if (instructionStepsDetail.length === 6) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription5, 400, sender);
-                setTimeout(actions.sendStepDescription6, 500, sender);
-            }
-            else if (instructionStepsDetail.length === 7) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-                setTimeout(actions.sendStepDescription5, 400, sender);
-                setTimeout(actions.sendStepDescription6, 500, sender);
-                setTimeout(actions.sendStepDescription7, 600, sender);
-            }
-            else if (instructionStepsDetail.length === 8) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-                setTimeout(actions.sendStepDescription5, 400, sender);
-                setTimeout(actions.sendStepDescription6, 500, sender);
-                setTimeout(actions.sendStepDescription7, 600, sender);
-                setTimeout(actions.sendStepDescription8, 700, sender);
-            }
-            else if (instructionStepsDetail.length === 9) {
-                setTimeout(actions.sendStepDescription2, 100, sender);
-                setTimeout(actions.sendStepDescription3, 200, sender);
-                setTimeout(actions.sendStepDescription4, 300, sender);
-                setTimeout(actions.sendStepDescription5, 400, sender);
-                setTimeout(actions.sendStepDescription6, 500, sender);
-                setTimeout(actions.sendStepDescription7, 600, sender);
-                setTimeout(actions.sendStepDescription8, 700, sender);
-                setTimeout(actions.sendStepDescription9, 800, sender);
-            }
+            actions.sendStepDescription(sender, instructionStepsDetail);
         });
 },
-    sendListReceiptDetail(sender) {
-        console.log("sendListReceiptDetail1 runned");
-        let elements1 = [];
-        elements1[0] = {
-            "title": title[0],
-            "image_url": images[0],
-            "subtitle": "",
-            "default_action": {
-                "type": "web_url",
-                "url": "https://servicio.io",
-                "messenger_extensions": true,
-                "webview_height_ratio": "tall",
-                "fallback_url": "https://servicio.io"
-            }
-        };
-        if (title[1]) {
-            elements1[1] = {
-                "title": title[1],
-                "image_url": images[1],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[2]) {
-            elements1[2] = {
-                "title": title[2],
-                "image_url": images[2],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[3]) {
-            elements1[3] = {
-                "title": title[3],
-                "image_url": images[3],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        actions.sendListMessage1(sender, elements1);
-    },
-    sendListReceiptDetail2(sender) {
-        console.log("sendListReceiptDetail2 runned");
-        let elements2 = [];
-        elements2[0] = {
-                "title": title[4],
-                "image_url": images[4],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            };
-        if (title[5]) {
-            elements2[1] = {
-                "title": title[5],
-                "image_url": images[5],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[6]) {
-            elements2[2] = {
-                "title": title[6],
-                "image_url": images[6],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[7]) {
-            elements2[3] = {
-                "title": title[7],
-                "image_url": images[7],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        actions.sendListMessage2(sender, elements2);
-    },
-    sendListReceiptDetail3(sender) {
-        console.log("sendListReceiptDetail3 runned");
-        let elements3 = [];
-        elements3[0] = {
-                "title": title[8],
-                "image_url": images[8],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            };
-        if (title[9]) {
-            elements3[1] = {
-                "title": title[9],
-                "image_url": images[9],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[10]) {
-            elements3[2] = {
-                "title": title[10],
-                "image_url": images[10],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[11]) {
-            elements3[3] = {
-                "title": title[11],
-                "image_url": images[11],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        actions.sendListMessage3(sender, elements3);
-    },
-    sendListReceiptDetail4(sender) {
-        console.log("sendListReceiptDetail4 runned");
-        let elements4 = [];
-
-        elements4[0] = {
-            "title": title[12],
-            "image_url": images[12],
-            "subtitle": "",
-            "default_action": {
-                "type": "web_url",
-                "url": "https://servicio.io",
-                "messenger_extensions": true,
-                "webview_height_ratio": "tall",
-                "fallback_url": "https://servicio.io"
-            }
-        };
-        if (title[13]) {
-            elements4[1] = {
-                "title": title[13],
-                "image_url": images[13],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[14]) {
-            elements4[2] = {
-                "title": title[14],
-                "image_url": images[14],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[15]) {
-            elements4[3] = {
-                "title": title[15],
-                "image_url": images[15],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        actions.sendListMessage4(sender, elements4);
-    },
-    sendListReceiptDetail5(sender) {
-        console.log("sendListReceiptDetail5 runned");
-        let elements5 = [];
-        elements5[0] = {
-            "title": title[16],
-            "image_url": images[16],
-            "subtitle": "",
-            "default_action": {
-                "type": "web_url",
-                "url": "https://servicio.io",
-                "messenger_extensions": true,
-                "webview_height_ratio": "tall",
-                "fallback_url": "https://servicio.io"
-            }
-        };
-        if (title[17]) {
-            elements5[1] = {
-                "title": title[17],
-                "image_url": images[17],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[18]) {
-            elements5[2] = {
-                "title": title[18],
-                "image_url": images[18],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        if (title[19]) {
-            elements5[3] = {
-                "title": title[19],
-                "image_url": images[19],
-                "subtitle": "",
-                "default_action": {
-                    "type": "web_url",
-                    "url": "https://servicio.io",
-                    "messenger_extensions": true,
-                    "webview_height_ratio": "tall",
-                    "fallback_url": "https://servicio.io"
-                }
-            }
-        }
-        actions.sendListMessage5(sender, elements5);
-    },
     sendStepDescription(sender) {
         console.log("sendStepDescription runned");
-
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[0] + ": " + instructionStepsDetail[0],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
+        for (let step = 0; step < instructionStepsDetail.length; step++) {
+            let opts = {
+                form: {
+                    recipient: {
+                        id: sender
+                    },
+                    message: {
+                        text: "Step " + instructionStepsNumber[step] + ": " + instructionStepsDetail[step],
+                        metadata: "DEVELOPER_DEFINED_METADATA"
+                    }
                 }
-            }
-    };
-    FBRequest(opts, (err, resp, data) => {
-        console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-        //if (cb) {
-        //   cb(err || data.error && data.error.message, data);
-        //}
-    });
+            };
+            FBRequest(opts, (err, resp, data) => {
+                console.log("ERROR:" + JSON.stringify(err) + "DATA:" + JSON.stringify(data));
+                //if (cb) {
+                //   cb(err || data.error && data.error.message, data);
+                //}
+            });
+        }
 },
-    sendStepDescription2(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[1] + ": " + instructionStepsDetail[1],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription3(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[2] + ": " + instructionStepsDetail[2],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription4(sender) {
-
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[3] + ": " + instructionStepsDetail[3],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription5(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[4] + ": " + instructionStepsDetail[4],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription6(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[5] + ": " + instructionStepsDetail[5],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription7(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[6] + ": " + instructionStepsDetail[6],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription8(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[7] + ": " + instructionStepsDetail[7],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    sendStepDescription9(sender) {
-        let opts = {
-            form: {
-                recipient: {
-                    id: sender
-                },
-                message: {
-                    text: "Step " + instructionStepsNumber[8] + ": " + instructionStepsDetail[8],
-                    metadata: "DEVELOPER_DEFINED_METADATA"
-                }
-            }
-        };
-        FBRequest(opts, (err, resp, data) => {
-            console.log("ERROR:" + JSON.stringify(err) +"DATA:" + JSON.stringify(data));
-            //if (cb) {
-            //   cb(err || data.error && data.error.message, data);
-            //}
-        });
-    },
-    firstAnswerChooseCuisine(sender) {
-        console.log("firstAnswerChooseCuisine runned");
-        let msg = "What cuisine do you search for? Type or select!";
-        let elements =
-            [
-                {
-                    "content_type": "text",
-                    "title": "German",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/german-flag-graphic.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GERMAN"
-                },
-                {
-                    "content_type": "text",
-                    "title": "American",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/american-flag-graphic.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_AMERICAN"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Southern",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SOUTHERN"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Irish",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Ireland_flag_300.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_IRISH"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Korean",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_South_Korea.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_KOREAN"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Chinese",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_China.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_CHINESE"
-                },
-                {
-                    "content_type": "text",
-                    "title": "French",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_France.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_FRENCH"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Eastern European",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag-map_of_the_Eastern_European_countries.svg_.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_EASTERNEUROPE"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Greek",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Flag_of_Greece.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_GREEK"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Spanish",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/Spain-Flag.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_SPANISH"
-                },
-                {
-                    "content_type": "text",
-                    "title": "Italian",
-                    "image_url": "http://servicio.io/wp-content/uploads/2017/08/italian-flag-graphic.png",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_ITALIAN"
-                },
-            ];
-        actions.sendQuickReplyMessage(sender, msg, elements);
-    }
 };
 
 // Setting up our bot
